@@ -79,11 +79,6 @@ wfatms = mag.forward(wfatms_tel)
 ## Create propagator from pupil to focal plane
 prop = FraunhoferPropagator(pupil_grid, science_focal_grid, wavelength)
 
-## Get the app coronagraph
-app_amp = fits.getdata('/home/vikram/Work/DeepContrast/coronagraphs/Square_20_80_20_25_0_2_amp_resampled_512.fits').ravel()
-app_phase = fits.getdata('/home/vikram/Work/DeepContrast/coronagraphs/Square_20_80_20_25_0_2_phase_resampled_512.fits').ravel()
-app = Apodizer(app_amp * np.exp(1j * app_phase))
-
 ## Create detector
 flatfield = 0.05 # = 5% flat field error 
 darkcurrentrate = 2 # = dark current counts per second
@@ -105,6 +100,12 @@ N_mla = 22
 D_mla = 10.5e-3
 shwfs = SquareShackHartmannWavefrontSensorOptics(pupil_grid, F_mla, N_mla, D_mla)
 shwfse = ShackHartmannWavefrontSensorEstimator(shwfs.mla_grid, shwfs.micro_lens_array.mla_index)
+
+## Get the app coronagraph
+app_amp = fits.getdata('/home/vikram/Work/DeepContrast/coronagraphs/Square_20_80_20_25_0_2_amp_resampled_512.fits').ravel()
+app_phase = fits.getdata('/home/vikram/Work/DeepContrast/coronagraphs/Square_20_80_20_25_0_2_phase_resampled_512.fits').ravel()
+app = Apodizer(app_amp * np.exp(1j * app_phase))
+
 
 ## Generate a diffraction limited image for metrics
 diff_lim_img = prop(wf).power
